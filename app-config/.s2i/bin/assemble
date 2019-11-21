@@ -1,0 +1,3 @@
+exec /usr/libexec/s2i/assemble
+
+echo "This is some custom string" >> /var/tmp/foo
