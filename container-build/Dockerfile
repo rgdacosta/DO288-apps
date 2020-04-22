@@ -11,6 +11,7 @@ LABEL io.openshift.expose-services="8080:http" \
       io.k8s.description="My httpd container application" \
       io.openshift.tags="httpd, web server, apache, apache2"
 
+# The annotations above DO NOT actually bind the application to the mentioned ports, we need configuration directives to facilitate this
 RUN sed -i -e 's/^Listen 80/Listen 8080/g' /etc/httpd/conf/httpd.conf
 
 RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \
