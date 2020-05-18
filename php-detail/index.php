@@ -9,9 +9,9 @@
     echo '<p>TEXT = ' .$_ENV["TEXT"] . '</p>';
     echo '<p>PASSWORD = ' .$_ENV["PASSWORD"] . '</p>';
     echo '<p>';
-    if (file_exists('/my_secret/file_secret')) {
-      echo "/my_secret/file_secret contains: ";
-      echo nl2br(file_get_contents( "/my_secret/file_secret" )); 
+    if (file_exists('/my_secret/id_rsa')) {
+      echo "/my_secret/id_rsa contains: ";
+      echo nl2br(file_get_contents( "/my_secret/id_rsa" )); 
     } else {
       echo "No secrets found!";
     }
