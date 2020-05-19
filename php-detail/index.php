@@ -1,23 +1,28 @@
-<?php 
-  print "Hellom World!. I am running on host -> " . gethostname() ." (" . $_SERVER['SERVER_ADDR'] . ")" . "\n";
+<?php
+  print "Hello, World!. I am running on host " . gethostname() ." (" . $_SERVER['SERVER_ADDR'] . ")" . "\n";
+  echo "<br/><br/>";
+  print "This app was built with php " . PHP_VERSION . "\n";
+  echo "<br/><br/>";
+  print "The value of the variable MY_STRING is " .$_ENV["MY_STRING"] . "\n";
+  echo "<br/><br/>";
+  print "The value of the variable MY_PASSWORD = " .$_ENV["MY_PASSWORD"] . "\n";
+  echo "<br/><br/>";
 
-echo '<p>I am running PHP version ' . phpversion() . '</p>';
-echo '<p>TEXT = ' .$_ENV["TEXT"] . '</p>';
-echo '<p>PASSWORD = ' .$_ENV["PASSWORD"] . '</p>';
-echo '<p>';
-if (file_exists('/my_secret/id_rsa')) {
-echo "/my_secret/id_rsa contains: ";
-echo nl2br(file_get_contents( "/my_secret/id_rsa" )); 
-} else {
-echo "No secrets found!";
-}
-echo '</p>';
-echo '<p>';
-if (file_exists('/my_mount/my_file')) {
-echo "file contains: ";
-echo nl2br(file_get_contents( "/my_mount/my_file" )); 
-} else {
-echo "No other files found!";
-}
-echo '</p>';
+  if (file_exists('/my_secret/id_rsa')) {
+    echo "/my_secret/id_rsa contains: ";
+    echo "<br/><br/>";
+    echo nl2br(file_get_contents( "/my_secret/id_rsa" ));
+   } else {
+    echo "Nothing was found at /my_secret/id_rsa.";
+    }
+
+  echo "<br/><br/>";
+
+  if (file_exists('/my_mount/id_rsa.pub')) {
+    echo "file contains: ";
+    echo "<br/><br/>";
+    echo nl2br(file_get_contents( "/my_mount/id_rsa.pub" ));
+   } else {
+    echo "Nothing was found at /my_mount/id_rsa.pub";
+    }
 ?>
