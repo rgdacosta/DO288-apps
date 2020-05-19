@@ -1,8 +1,7 @@
 <?php 
-  print "Hellom World!. I am running on host -> " . gethostname() ." (" . $_SERVER['SERVER_ADDR'] . ")" . "\n";
-
-echo '<p>I am running PHP version ' . phpversion() . '</p>';
-echo '<p>TEXT = ' .$_ENV["TEXT"] . '</p>';
+  print "Hello, World!. I am running on host " . gethostname() ." (" . $_SERVER['SERVER_ADDR'] . ")" . "\n";
+  print "This app was built with php " . PHP_VERSION . "\n";
+  print "TEXT = " .$_ENV["TEXT"] ."\n" ;
 echo '<p>PASSWORD = ' .$_ENV["PASSWORD"] . '</p>';
 echo '<p>';
 if (file_exists('/my_secret/id_rsa')) {
