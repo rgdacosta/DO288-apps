@@ -1,0 +1,229 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: php-detail-demo
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${NAME}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: php-detail
+      git:
+        uri: https://github.com/rgdacosta/DO288-apps
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: php:7.0
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: ${WEBHOOK_SECRET} 
+      type: GitHub
+    - generic:
+        secret: ${WEBHOOK_SECRET}
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    generation: 1
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: v1
+  data:
+    MY_STRING: foo
+  kind: ConfigMap
+  metadata:
+    name: ${CM_ENV_NAME}
+- apiVersion: v1
+  data:
+    id_rsa.pub: |
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3TdKXJa8uWCoEHLPJ6n8g9fyd3wKrYRYwCmAJJ76D66Vpq2Jlv7f4/UVe9J+evuppED6EF8wpLMQZRqdbzkOLYWoWxdO6HwfWAx8jlWIf8G1nfnlgBz7wg5nfgW7qPyUezDxibz5pU3SyI1PQQP/ZpWROcOvafa6LLVj2jFL4kPe0nm0qG6IyzgM0KjEPuYRjoT1CjUEjIE5q1HOcoAfw50lHNjEP19KcJmnXS8TENA9cFq0wkCiQV3WsQUMl5lhQPBIk8a6BBwrHLlHHXBpVv4SoNzeqk5o4NLalphjRqXXbKt1hd43QHwP6WJ3L7XYAG1Bxd8l5Q6enG100s8BN student@workstation.lab.example.com
+  kind: ConfigMap
+  metadata:
+    name: ${CM_FILE_NAME}
+- apiVersion: v1
+  data:
+    id_rsa: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBdDAzU2x5V3ZMbGdxQkJ5enllcC9JUFg4bmQ4Q3EyRVdNQXBnQ1NlK2crdWxhYXRpClpiKzMrUDFGWHZTZm5yN3FhUkEraEJmTUtTekVHVWFuVzg1RGkyRnFGc1hUdWg4SDFnTWZJNVZpSC9CdFozNTUKWUFjKzhJT1ozNEZ1Nmo4bEhzdzhZbTgrYVZOMHNpTlQwRUQvMmFWa1RuRHIybjJ1aXkxWTlveFMrSkQzdEo1dApLaHVpTXM0RE5Db3hEN21FWTZFOVFvMUJJeUJPYXRSem5LQUg4T2RKUnpZeEQ5ZlNuQ1pwMTB2RXhEUVBYQmF0Ck1KQW9rRmQxckVGREplWllVRHdTSlBHdWdRY0t4eTVSeDF3YVZiK0VxRGMzcXBPYU9EUzJwYVlZMGFsMTJ5cmQKWVhlTjBCOEQrbGlkeSsxMkFCdFFjWGZKZVVPbnB4dGROTFBBVFFJREFRQUJBb0lCQUhoUG5RUlYyS2hiZDZCaApVbVFhQkwwV2wycnJQKzVLZCt5cU1xUnZzSzBYa3VkTGRQY0JvZmZNREtjcGVrY1FXZjBCaTNiWnc4Zld1Uk01Cis0alhWaC82blU0N0pCL0tWRE5Vc3pDQTBQblRyWXM3U09FTmdITU9mWVZraCs4NTZOeFJBdVU4ek1NRzR0WTEKTjhLOWx2QThqUnlySXpLeVFVamFSOFR6RDFaVGV4K1lXWWJFbkszWUxjeXFqenh1NENTRXR0b3diMndZVGJkMwpQU1JYVlg3M2IycVY1V256M1c2cUl5MDB5amx0TG1PcDNibnhndnVGQzNENVh4SWthK3VaWUNCOFFiTWZxRzVDCjV2ZmxvSnFwV2ZzWlFxS1N2M1ZRcWlQT0ZxWW9sb2w3bDBYNiswWGFFc0QxQVpzbVZNNnJobDl3SExZcWJkNkYKSXE4MVU4VUNnWUVBNkhDQmIvcGhCVTFXdTJRNktvMnRnaFJoYkhxazhBWGp6ZDkwN1pDQ2VPOGwzckkxc1lwKwptZGs0emVXSDhFb1JzNXlXT3ArbG1PdzJiQ3RGSHRMYjZ1bmRFV0NuWjBhbUdkRFl3Rko2WEFFM1RYM1lIdmdFCmtZYWdBc00ybFBJMTN5Z245WlViZmZVR2Ntemw5Wnp2bE9DSVdNN0RhZnNNVFpqVUVpVlB1MThDZ1lFQXllSlIKR3RSbzM1N3hTdVBhMXNjWU16WEJHSXNvNHROUFBRRFRGQjJ4YnpCV2IvclhOUTFBMlRERkhkK2pITTJsNFRjaApLMFoyY1l0dU54d0NLSk9heTl4TytMV1ppME1ucGxCc3ZGVHMxWHhGR29HOG5OTm0vSm1ibkF2Yko5YTRLYU9qCldkMlg2R2VwQ3B3cXlsSG5MOWsraU0xNWVKT2EwVWxqVEtFV1Q5TUNnWUVBNXkxR1B6WFptdWxoa3J6TGNSazUKOFQ4TjZsTk1pZ0NCb25kVmx4Vjcvb1Z6dDdxczFtaDFJOVM4djJORFFZU1plSGNMbjBDNjlZNHhUb0gybkFLQgpnWEdaVWpnOEp1WklPekxROE83WERYeVVJVGxCWXdPdm40RXkwYXlRTTdGMlRQMW1TTVZFODVCb0doUWUzcHA0CldpeTZ6d0ROc0RGaytpUSsvOUVtTEtjQ2dZQVo1Q21NckZNcTRzS0ZYVVdTcUFRRmhVNVhiSGw0NWFyUzR3a3YKR2tQSVE4WENKTVIyN0ZVMXhaaHlKVjFRODFyajBHTXpucHpRSVJhb2dMSVNMQ1A5SXlzSm9KaXBrSnBFTFNwVQoyUHRxd2I1SEVQNTBpblE1enlWeTFONXRkSTgzMytHeVE4WVlxenExdnFPS1FRaktUUzFFOUQwdzVwVkRaQXNWCko4K3B1d0tCZ1FDVlk5TkVWUXE2VW8vUGVxV2NBNFFZVDYwVDRqbStuV1JGOG55eWJzR01zamdtU295UEtjcFQKdG5yN1dOcGZOVW5xcE5XL2tMVGlTaldHTVFEVU5tNEhQd0pKdDhNRjIwczZiYlcwSjg3bmlyeGpvNldacTBNYgpHYkZFbzVYS3BhTmljRTJOYnJGMDR5aEZWZmlOSVB4anBlU1k0L2JNdUp4bWN0NFFVT0lUZEE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+  kind: Secret
+  metadata:
+    name: ${SECRET_FILE_NAME}
+  type: Opaque
+- apiVersion: v1
+  stringData:
+    MY_PASSWORD: bar
+  kind: Secret
+  metadata:
+    name: ${SECRET_ENV_NAME}
+  type: Opaque
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${NAME}
+      deploymentconfig: ${NAME}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: ${NAME}
+          deploymentconfig: ${NAME}
+      spec:
+        containers:
+        - env:
+          - name: MY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: MY_PASSWORD
+                name: ${SECRET_ENV_NAME}
+          - name: MY_STRING
+            valueFrom:
+              configMapKeyRef:
+                key: MY_STRING
+                name: ${CM_ENV_NAME}
+          imagePullPolicy: Always
+          name: ${NAME}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /my_secret
+            name: mysecfile-vol
+          - mountPath: /my_mount
+            name: mycmfile-vol
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: mysecfile-vol
+          secret:
+            defaultMode: 420
+            secretName: ${SECRET_FILE_NAME} 
+        - configMap:
+            defaultMode: 420
+            name: ${CM_FILE_NAME}
+          name: mycmfile-vol
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:latest
+          namespace: ${NAME}
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: ${NAME}
+      deploymentconfig: ${NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    host: ${APPLICATION_DOMAIN}
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: ${NAME}
+      weight: 100
+    wildcardPolicy: None
+parameters:
+- description: The name assigned to all of the frontend objects defined in this template.
+  displayName: Name
+  name: NAME
+  required: true
+  value: php-detail
+- description: Trigger secret.
+  displayName: Trigger Secret
+  from: '[a-zA-Z0-9]{40}'
+  generate: expression
+  name: WEBHOOK_SECRET
+- description: The name assigned to the ConfigMap which has the environment variable.
+  displayName: Config Map Environment Name
+  name: CM_ENV_NAME
+  required: true
+  value: php-cm-env
+- description: The name assigned to the ConfigMap which has the file to be mounted.
+  displayName: Config Map File Name
+  name: CM_FILE_NAME
+  required: true
+  value: php-cm-file
+- description: The name assigned to the Secret which has the environment variable.
+  displayName: Secret Environment Name
+  name: SECRET_ENV_NAME
+  required: true
+  value: php-secret-env
+- description: The name assigned to the Secret which has the file to be mounted.
+  displayName: Secret File Name
+  name: SECRET_FILE_NAME
+  required: true
+  value: php-secret-file
+- description: The exposed hostname that will route to the service, a blank value will have the default.
+  displayName: Application Hostname
+  name: APPLICATION_DOMAIN
+
