@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: php-detail-demo
+  name: php-detail-template
 objects:
 - apiVersion: v1
   kind: BuildConfig
@@ -20,9 +20,9 @@ objects:
     resources: {}
     runPolicy: Serial
     source:
-      contextDir: php-detail
+      contextDir: ${CONTEXT}
       git:
-        uri: https://github.com/rgdacosta/DO288-apps
+        uri: ${SCM}
       type: Git
     strategy:
       sourceStrategy:
@@ -196,6 +196,16 @@ parameters:
 - description: The name assigned to all of the frontend objects defined in this template.
   displayName: Name
   name: NAME
+  required: true
+  value: php-detail
+- description: The source code repository from which to build the application 
+  displayName: Source Code Repository
+  name: SCM
+  required: true
+  value: https://github.com/rgdacosta/DO288-apps
+- description: The context directory inside of the source code repository where the code is found 
+  displayName: Context Directory
+  name: CONTEXT
   required: true
   value: php-detail
 - description: Trigger secret.
