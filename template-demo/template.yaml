@@ -156,7 +156,6 @@ objects:
         from:
           kind: ImageStreamTag
           name: ${NAME}:latest
-          namespace: ${NAME}
       type: ImageChange
 - apiVersion: v1
   kind: Service
