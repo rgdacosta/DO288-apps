@@ -183,7 +183,7 @@ objects:
       app: ${NAME}
     name: ${NAME}
   spec:
-    host: ${APPLICATION_DOMAIN}
+    host: ${APPLICATION_FQDN}
     port:
       targetPort: 8080-tcp
     to:
@@ -234,5 +234,5 @@ parameters:
   value: php-secret-file
 - description: The exposed hostname that will route to the service, a blank value will have the default.
   displayName: Application Hostname
-  name: APPLICATION_DOMAIN
+  name: APPLICATION_FQDN
 
